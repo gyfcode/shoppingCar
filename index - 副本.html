@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div class="aa bb"></div>
+	<div class="aa bb"></div>
+	<div class="aa bb"></div>
+</body>
+<script>
+	function getClass(obj,cobj){
+		var cobj=cobj?cobj:document;
+		if(cobj.getElementsByClassName){
+			return cobj.getElementsByClassName(obj)
+		}else{
+			var arr=cobj.getElementsByTagName("*");
+			var newarr=[]
+			for(var i=0;i<arr.length;i++){
+				if(check(arr[i],obj)){
+					newarr.push(arr[i]);	
+				}
+			}
+			return newarr;
+		}
+		function check(newarr,obj){
+			var arr=newarr.split(" ");
+			for(var i=0;i<arr.length;i++){
+				if(arr[i]==obj){
+					return true;
+				}
+			}
+			return false;
+		}
+
+	}
+	console.log(getClass("aa"))
+</script>
+</html>

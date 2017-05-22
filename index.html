@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="css/index.css">
+	<script src="js/angular.js"></script>
+	<!-- //<script src="js/index.js"></script> -->
+	<style>
+		.float-bar-wrapper{
+			width: 990px;
+			height: 50px;
+    		overflow: hidden;
+    		background: #e5e5e5;
+    		position: fixed;
+    		bottom: 0;
+    		left: 0;
+    		right: 0;
+    		margin: 0 auto;
+		}
+		.select-all{
+			float: left;
+		    width: 50px;
+		    height: 50px;
+		    line-height: 50px;
+		    padding-left: 5px;
+
+		}
+		.operations{
+			float: left;
+		    line-height: 50px;
+		    height: 50px;
+		}
+		.operations a{
+			font-size: 12px;
+			margin-left: 25px;
+    		float: left;
+    		color: #3c3c3c;
+		}
+		.float-bar-right{
+			position: relative;
+			float: right;
+		    padding-left: 20px;
+		}
+		.float-bar-right>ul>li{
+			color: #3c3c3c;
+			margin-left: 20px;
+			font-size: 14px;
+			line-height: 50px;
+			float: left;
+		}
+		.float-bar-right>ul>li span{
+			font-weight: bolder;
+			font-size: 14px;
+			margin:10px;
+			color: red;
+		}
+		.j_go{
+			text-align: center;
+			line-height: 50px;
+			background: #B0B0B0;
+		    color: #fff;
+		    border-left: 1px solid #e7e7e7;
+		    width: 119px;
+		    /*cursor: not-allowed;*/
+		    text-decoration: none;
+		}
+		.caozuo a{
+			color: #3c3c3c;
+		}
+		.taobao{
+			margin-right: 5px;
+			position: relative;
+			top:3px;
+			display: inline-block;
+			width:16px;
+			height: 16px;
+			background: url(images/bg.png)  no-repeat -20px -105px;
+
+		}
+		.shows{
+			position: relative;
+		}
+		.hovers{
+			position: absolute;
+			z-index: 9999;
+			border: 1px solid #ccc;
+		    padding: 10px;
+		    width: 240px;
+		    
+		    background:#fff;
+		    left:115px;
+    		top: 0px;
+    		display:none;
+		}
+		.hovers div{
+			text-align: center;
+		}
+		.hovers>div>img{
+			float: left;
+			width:100%;
+		}
+		.hovers>img{
+			width:100%;
+		}
+		.shows:hover .hovers{
+			display:block;
+		}
+		.hovers p{
+			font-size: 12px;
+			 color: #6b6b6b;
+			 line-height:16px;
+		}
+		.searchs{
+			text-align: center;
+			width: 74px;
+			position: absolute;
+			left:0;
+			top:0;
+			background: #f5f5f5;
+		    border-radius: 0;
+		    border: 0 none;
+		    color: #6b6b6b;
+		    font-size: 12px;
+		}
+		.searchs li{
+			line-height: 32px;
+		}
+		.normal{
+
+		}
+		.outdate{
+			color: #ccc;
+			background: #fcfcfc;
+			border: 1px solid #e2e2e2;
+		}
+		.outdate a{
+			color: #ccc;
+		}
+		a{
+			color:#3c3c3c;
+		}
+		.red{
+			background: red!important;
+			cursor: pointer;
+		}
+		.gray{
+			background: gray!important;
+			cursor: not-allowed;
+		}
+	</style>
+</head>
+<body ng-app="myapp" ng-controller="control">
+	<div class="car">
+		<ul class="header">
+			<li class="logo fl">
+				<img src="images/logo.png" alt="">
+			</li>
+			<li class="searchBox fr">
+				<input type="search" class="fl" ng-model="search">
+				<span class="fl">搜索</span>
+				<ul class="searchs">
+					<li>宝贝</li>
+				
+				</ul>
+			</li>
+		</ul>
+		<div class="middle">
+			<ul class="tabs fl">
+				<li>全部商品 <span>{{numbers}}</span></li>
+				<li class="spicer"></li>
+				<li>降价商品 <span>{{jiangjianumber}}</span></li>
+				<li class="spicer"></li>
+
+				<li>库存紧张 0</li>
+			</ul>
+			<div class="fr ">
+				<span>已选商品（不含运费）</span><span class="money">{{sumPrice | currency:"¥" }}</span><span class="jiesuan"  ng-class="{true:'red',false:'gray'}[flag]">结算</span>
+			</div>
+		</div>
+		<dl>
+		<ul class="lists">
+			<li><input type="checkbox" ng-click="checkall()"><span>全选</span></li>
+			<li style="margin-right:250px">商品信息</li>
+			<li>单价</li>
+			<li>数量</li>
+			<li>金额</li>
+			<li>操作</li>
+		</ul>
+		<dl class="content" ng-repeat="v in data |filter:{xiangqing:search}">
+			<dt><input type="checkbox" ng-show="{{v.kucun!=' '}}"> <span class="taobao"></span><span>店铺：{{v.dianpu}}</span><a href=""></a></dt>
+			<dd  ng-class="{true:'normal',false:'outdate'}[v.status]">
+				<ul class="show">
+					<li  style="width: 25px;float:left;margin-right:10px">
+						<input type="checkbox" ng-checked="v.check" ng-model="v.check" ng-show="{{v.kucun!=' '}}">
+						<p ng-show="{{v.kucun==' '}}" style="width:30px;font-size:12px;background: #dadada;height:20px;line-height:20px;margin-top:40px;border-radius: 2px;text-align: center;color:#5f5f5f">失效</p>
+					</li>
+					<li class="shows">
+						<div class="showimg">
+							<img src="{{v.img}}" alt="">
+						</div>
+						<div class="text">
+							<a href="">{{v.xiangqing}}</a>
+						</div>
+						<div class="hovers">
+							<div>
+								<img src="images/48.png" alt="" style="width:48px;display:inline;margin-left:40px">
+								<img src="images/bt.png" alt="" style="width:104px;display:inline;margin-top:10px">
+							</div>
+							<img src="{{v.bigsimg}}" alt="">
+							<p>{{v.xiangqing}}</p>
+							
+						</div>
+					</li>
+					<li class="color">
+						<span  ng-show="{{v.color!=''}}">颜色分类：</span><span>{{v.color}}</span>
+					</li>
+					<li class="jiage">
+						<p >{{v.yuanjia | currency:"¥"}}</p>
+						<p>{{v.xainjia | currency:"¥"}}</p>
+						<p  ng-show="{{v.jiangjia!=''}}" style="background:#1dc2b4;width:80px;font-size:12px;color:#fff;margin-left:30px;height:30px;line-height:30px;">{{v.jiangjia}}</p>
+					</li>
+					<li class="number">
+						<div class="nleft" ng-click=del(v.id) ng-show="{{v.kucun!=' '}}">-</div>
+						<div ng-show="{{v.kucun!=' '}}"><input type="number" ng-model="v.num" ></div>
+						<div class="nrigth" ng-click="add(v.id)" ng-show="{{v.kucun!=' '}}">+</div>
+					</li>
+					<li class="jine">
+						{{v.xainjia*v.num | currency:"¥"}}
+					</li>
+					<li class="caozuo">
+						<p><a href="">移入收藏夹</a></p>
+						<p ng-click=remove(v.id)><a href="javascript:;" >删除</a></p>
+						<p><a href="">相似宝贝</a></p>
+					</li>
+				</ul>
+			</dd>
+		</dl>
+		<ul class="float-bar-wrapper" style="margin-top:15px">
+			<li class="select-all">
+				<input type="checkbox" ng-click="checkall()"> <span>全选</span>
+			</li>
+			<li class="operations">
+				<a href="javascript:;">删除</a>
+				<a href="javascript:;" ng-click="delkucun0()">清除失效宝贝</a>
+				<a href="javascript:;">移入收藏夹</a>
+				<a href="javascript:;">分享</a>
+			</li>
+			<li class="float-bar-right">
+				<ul>
+					<li>
+						<div class="top">已选商品<span>{{arr.length}}</span>件</div>
+						<div class="bottom"></div>
+					</li>
+					<li>
+						<div class="top">合计(不含运费):<span>{{sumPrice | currency:"¥" }}</span></div>
+						<div class="bottom"></div>
+					</li>
+					<li>
+						<div class="top j_go" ng-class="{true:'red',false:'gray'}[flag]">结算</div>
+						<div class="bottom"></div>
+					</li>
+					
+				</ul>
+			</li>
+		</ul>
+	</div>
+
+</body>
+<script>
+	angular.module("myapp",[]).controller("control",["$scope",function($scope){
+		$scope.data=[
+			{id:1,dianpu:"特克旗舰店",img:"images/c1.jpg",yuanjia:25.80,xainjia:15.80,xiangqing:"金立F103手机壳F103S挂绳脖保护硅胶套F103L防摔全包透明软壳女款",color:"升级金边钻【无指环】送挂绳+钢膜",num:1,bigsimg:"images/bigs1.jpg",jiangjia:"",kucun:10,status:true,check:false
+			},
+			{id:2,dianpu:"老管家旗舰店",img:"images/c2.jpg",yuanjia:69.00,xainjia:19.80,xiangqing:"老管家羽绒服干洗剂免水洗清洗剂衣物去污清洁剂衣服去油渍泡沫型",color:"",num:1,bigsimg:"images/bigs2.jpg",jiangjia:"",status:true,check:false
+			},
+			{id:3,dianpu:"爵爷旗舰店",img:"images/c3.jpg",yuanjia:25.80,xainjia:15.80,xiangqing:"夏季纯色长袖衬衫男士韩版修身休闲青少年白色衬衣潮男装衣服寸衫",color:"水蓝色",size:"L",num:1,bigsimg:"images/bigs3.jpg",jiangjia:"卖家降价",kucun:10,status:true,check:false
+			},
+			{id:4,dianpu:"欧豪箱包旗舰店",img:"images/c4.jpg",yuanjia:205.80,xainjia:
+219.00,xiangqing:"欧豪拉杆箱行李箱万向轮旅行箱女韩版小清新密码箱皮箱学生男24寸",color:"水蓝色",size:"L",num:1,bigsimg:"images/big4.jpg",jiangjia:"",kucun:" ",status:false,check:false
+			},
+			{id:5,dianpu:"芭朵旗舰店",img:"images/c5.jpg",yuanjia:235.80,xainjia:
+250.00,xiangqing:"田园餐桌布长方形茶几布艺蕾丝圆台布欧式餐椅套椅垫套装现代简约",color:"淡粉色",size:"L",num:1,bigsimg:"images/big5.jpg",jiangjia:"",kucun:" ",status:false,check:false
+			}
+		]
+
+
+		
+	
+	
+
+		
+
+		//全选
+		$scope.checkAll=false;
+		$scope.checkall=function(){
+			$scope.checkAll=!$scope.checkAll;
+			if($scope.checkAll){
+				$scope.data.forEach(function(obj){
+					if(obj.status==true){
+						obj.check=true;
+					}
+					
+				})
+			}else{
+				$scope.data.forEach(function(obj){
+					if(obj.status==true){
+						obj.check=false;
+					}
+				})
+			}
+			
+			console.log($scope.data)
+		}
+		//总数
+		$scope.arr=[];
+
+		$scope.$watch("data",function(newVal,oldVal){
+			$scope.arr=$scope.data.filter(function(newVal){
+				return newVal.check==true
+			})
+			if($scope.arr.length>0){
+				$scope.flag=true;
+			}else{
+				$scope.flag=false;
+			}
+			
+		},true)	
+		
+		$scope.flag=false;
+
+		//总价
+		$scope.sumPrice=0;
+
+		$scope.$watch("data",function(newVal,oldVal){
+			$scope.sumPrice=0;
+			$scope.data.forEach(function(obj){
+				if(obj.status==true){
+					if(obj.check==true){
+						$scope.sumPrice+=obj.xainjia*obj.num
+					}
+					
+				}
+				
+			})
+	
+			
+		},true)	
+
+
+		
+
+		//商品数
+		$scope.numbers=$scope.data.length
+		//数量++
+		$scope.jiangjianumber=0;
+		$scope.data.forEach(function(obj,index){
+			if(obj.jiangjia!=""){
+				$scope.jiangjianumber++;
+			}
+		})
+		$scope.add=function(id){
+			$scope.data.forEach(function(obj,index){
+
+				if(obj.id==id){
+					obj.num++
+				}
+			})
+		}
+		//数量减减
+		$scope.del=function(id){
+			$scope.data.forEach(function(obj,index){
+
+				if(obj.id==id){
+					obj.num--
+				}
+			})
+		}
+		//删除某一条
+		$scope.remove=function(id){
+			$scope.data.forEach(function(obj,index){
+				if(obj.id==id){
+					$scope.data.splice(index,1)
+					$scope.numbers--
+				}
+			})
+		}
+
+		//总数量
+		$scope.getNum=function(){
+			$scope.arr=$scope.data.filter(function(obj){
+				return obj.check=='false'
+			})
+			return $scope.arr;
+			
+                
+		}
+		//获得钱数
+		// $scope.getPrice=function(){
+		// 	$scope.prices=0;
+		// 	angular.forEach($scope.data,function(obj,index){
+  //               $scope.prices+=obj.num*obj.xainjia;
+  //           })
+  //               return $scope.prices;
+		// }
+
+		
+
+		$scope.delkucun0=function(){
+			$scope.data=$scope.data.filter(function(obj){
+				return obj.kucun!=' '
+			})
+			$scope.numbers=$scope.data.length
+			console.log($scope.data)
+	
+		}
+		
+
+		
+		
+	}])
+</script>
+</html>
